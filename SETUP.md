@@ -396,6 +396,6 @@ Step 4 – Test the Detection
 
    ![Resource Group Screenshot](Document_Images/images44.png) 
 
-## 🎥 Demo Video
+## 🎥 Watch Simulated LSASS Dump — EDR Detection in LimaCharlie Demo Video
 
-https://youtu.be/BpEzajA3SKw
+   https://youtu.be/BpEzajA3SKw
