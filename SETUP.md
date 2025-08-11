@@ -1,5 +1,12 @@
 # Home-SOC-Lab-Build-Simulate-Detect
 
+Lab Components
+ - Windows (Host) – Your own Windows machine
+
+ - Windows VM – Target machine for testing
+
+ - Linux VM (Ubuntu) – Attack server
+
 ## 1. Disable Defender on Windows VM
 Step 1 – Turn Off from Windows Security
 1. Go to Windows Security > Virus & threat protection settings.
@@ -13,7 +20,7 @@ Step 1 – Turn Off from Windows Security
 
 Step 2 – Disable via Group Policy
 1. Press `Win + R`, type `gpedit.msc`, and press **Enter**.
-2. Navigate to:
+2. Go to:
 Computer Configuration > Administrative Templates > Windows Components > Microsoft Defender Antivirus
 3. Open **Turn off Microsoft Defender Antivirus** → Set to **Enabled** → Apply → OK.
 
@@ -81,8 +88,7 @@ Step 4 – Install Sysmon :
 Step 1 – Create Organization in LimaCharlie.io
 
 1. Log in to LimaCharlie.io.
-2. Create a new organization.
-3. Add a sensor → Select **Windows** → Create new → Name it “Windows VM Lab”.
+2. Create a new organization → Add sensor → Windows → Name: Windows VM Lab.
 
    ![Resource Group Screenshot](Document_Images/images11.png)
 
@@ -154,7 +160,7 @@ bash
 
    ![Resource Group Screenshot](Document_Images/images21.png)
 
-Step 1 – Static IP on Ubuntu
+Step 1 – Set Static IP on Ubuntu
 
 Edit the Netplan config:
 
@@ -274,7 +280,7 @@ powershell
 
 ---
 
-## 5. Start Command and Control Session
+## 5. Command and Control Session
 
 On Windows:
 
