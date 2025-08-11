@@ -35,12 +35,12 @@ The goal: See the full attack lifecycle from execution to detection in a SIEM/ED
 
 ## 🖼 Architecture
 
-[ Windows VM ]  <--->  [ Ubuntu VM with Sliver C2 ]
-       |                        |
-    Sysmon                Payload hosting
-  LimaCharlie EDR         Command & Control
-       |
-   LimaCharlie Cloud  -->  Detection Rules
+     [ Windows VM ]  <--->  [ Ubuntu VM with Sliver C2 ]
+           |                        |
+        Sysmon                Payload hosting
+      LimaCharlie EDR         Command & Control
+           |
+       LimaCharlie Cloud  -->  Detection Rules
 
 ---
 
