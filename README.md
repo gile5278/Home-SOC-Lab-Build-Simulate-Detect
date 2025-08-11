@@ -55,7 +55,7 @@ The goal: See the full attack lifecycle from execution to detection in a SIEM/ED
 ---
 
 ## ⚙ Setup Steps
-The detailed step-by-step guide is in SETUP.md, covering:
+The detailed step-by-step guide is in [SETUP.md](SETUP.md), covering:
 1. Disable Windows Defender (for lab only)
 2. Install Sysmon with SwiftOnSecurity config
 3. Install & configure LimaCharlie Agent
@@ -78,19 +78,22 @@ The detailed step-by-step guide is in SETUP.md, covering:
 - Use LimaCharlie Processes & Network views to identify malicious activity
 - Search for SENSITIVE_PROCESS_ACCESS events targeting lsass.exe
 - Create Detection & Response (D&R) rule:
-  `event: SENSITIVE_PROCESS_ACCESS
+```
+event: SENSITIVE_PROCESS_ACCESS
 op: ends with
 path: event/*/TARGET/FILE_PATH
-value: lsass.exe`
+value: lsass.exe
+```
+```
  - Set response:
-   `- action: report
-  name: LSASS access
-`
+   - action: report
+     name: LSASS access
+```
 - Trigger attack again and confirm detection alert in LimaCharlie
 
 ---
 
-## 🎥 Demo Video
+## 🎥 Watch Simulated LSASS Dump — EDR Detection in LimaCharlie Demo Video
 
 https://youtu.be/BpEzajA3SKw
 ---
