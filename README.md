@@ -65,7 +65,7 @@ The detailed step-by-step guide is in SETUP.md, covering:
 
 ---
 
-##🎯 Attack Simulation
+## 🎯 Attack Simulation
  - Generate Sliver payload targeting the Windows VM
  - Deliver payload via HTTP server
  - Execute payload to establish C2 session
